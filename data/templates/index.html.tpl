@@ -10,11 +10,13 @@
                 <img src="/static/logo.png" alt="logo" />
             </div> 
         </div>
-        <ul id="nav">
-            <li><a href="/index.html">Home</a></li>
-            <li><a href="/adopt.html">Adopt</a></li>
-            <li><a href="/list.html">List</a></li>
-        </ul>
+        <div id="wrapperNav">
+            <ul id="nav">
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/adopt.html">Adopt</a></li>
+                <li><a href="/list.html">List</a></li>
+            </ul>
+        </div>
         <h1 id="title">Norm's Pet Shop</h1>
     </body>
 </html>

@@ -1,11 +1,13 @@
 body {
-    background-color: cornflowerblue;
-    color: aliceblue;
+    background-color: aliceblue;
+    color: cornflowerblue;
     margin: 0;
+    font-size: 1.2em;
 }
 div#wrapperHeader {
     width: 100%;
     height: 300px;
+    background-color: cornflowerblue;
     text-align: center;
 }
 div#wrapperHeader div#header {
@@ -18,13 +20,20 @@ div#wrapperHeader div#header img {
     height: 300px;
     margin: 0 auto;
 }
+div#wrapperNav {
+    width: 100%;
+    height: 60px;
+    text-align: center;
+    background-color: cornflowerblue;
+    color: aliceblue;
+}
 ul#nav {
+    display: inline-block;
+    height: 60px;
     list-style-type: none;
     margin: 0;
-    padding: 0 0 0 4em;
+    padding: 0;
     overflow: hidden;
-    background-color: aliceblue;
-    color: cornflowerblue;
 }
 ul#nav li {
     float: left;
@@ -34,11 +43,13 @@ ul#nav li a {
     padding: 16px;
     text-align: center;
     text-decoration: none;
+    color: aliceblue;
+    font-size: 1.4em;
 }
 ul#nav li a:visited {
-    color: cornflowerblue;
+    color: aliceblue;
 }
 ul#nav li a:hover {
-    background-color: cornflowerblue;
-    color: aliceblue;
+    background-color: aliceblue;
+    color: cornflowerblue;
 }
