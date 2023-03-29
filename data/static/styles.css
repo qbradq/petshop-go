@@ -1,8 +1,16 @@
+html {
+    background-color: cornflowerblue;
+}
 body {
-    background-color: aliceblue;
-    color: cornflowerblue;
+    background-color: cornflowerblue;
     margin: 0;
     font-size: 1.2em;
+}
+div#wrapperDoc {
+    background-color: cornflowerblue;
+    width: 1024px;
+    margin-left: auto;
+    margin-right: auto;
 }
 div#wrapperHeader {
     width: 100%;
@@ -52,4 +60,37 @@ ul#nav li a:visited {
 ul#nav li a:hover {
     background-color: aliceblue;
     color: cornflowerblue;
+}
+div#wrapperBody {
+    background-color: aliceblue;
+    color: cornflowerblue;
+    padding: 1em 1em 2em 1em;
+}
+div#wrapperFooter {
+    width: 100%;
+    margin: 1em 0 0 0;
+    text-align: center;
+    background-color: cornflowerblue;
+    color: aliceblue;
+    font-size: 0.8em;
+}
+div#wrapperFooter a {
+    color: aliceblue;
+    font-weight: bold;
+    text-decoration: none;
+}
+div#wrapperFooter a:visited {
+    color: aliceblue;
+}
+div#wrapperFooter a:hover {
+    background-color: aliceblue;
+    color: cornflowerblue
+}
+h1.title {
+    font-size: 4em;
+    text-align: center;
+    text-decoration: underline;
+}
+p {
+    text-indent: 4em;
 }
