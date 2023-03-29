@@ -20,16 +20,16 @@ img#picture-preview {
     }
 </script>
 
-<form action="/api/list" method="post">
+<form action="/api/list" enctype="multipart/form-data" method="post">
     <img id="picture-preview" />
-    <label for="picture">Upload Picture</label>
-    <input type="file" name="picture" accept="image/*" onchange="preview(event);" />
+    <label for="picture">Picture</label><br />
+    <input type="file" id="picture" name="picture" accept="image/*" onchange="preview(event);" />
     <br />
-    <label for="name">Name</label>
-    <input type="text" name="name" />
+    <label for="name">Name</label><br />
+    <input type="text" id="name" name="name" />
     <br />
-    <label for="description">Description</label>
-    <textarea name="description" rows="10" cols="80"></textarea>
+    <label for="description">Description</label><br />
+    <textarea id="description" name="description" rows="10" cols="80"></textarea>
     <br />
     <input type="submit" value="Submit" />
 </form>
