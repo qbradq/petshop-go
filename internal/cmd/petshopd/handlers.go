@@ -105,3 +105,42 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+// adoptHandler handles the adoption page
+func adoptHandler(w http.ResponseWriter, r *http.Request) {
+	var (
+		uid         int
+		name        string
+		description string
+		ext         string
+	)
+	var pets []Pet
+	rows, err := statements["adopt"].Query()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	for {
+		if !rows.Next() {
+			if err := rows.Err(); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			break
+		}
+		if err := rows.Scan(&uid, &name, &description, &ext); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		pets = append(pets, Pet{
+			ID:               uid,
+			Name:             name,
+			Description:      description,
+			PictureExtension: ext,
+		})
+	}
+	if err := tpl.ExecuteTemplate(w, "adopt.html.tpl", pets); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}

@@ -62,12 +62,14 @@ func Main() {
 	// Prepare statements
 	prep("list", "INSERT INTO pets (name, description, picture_ext) VALUES (?,?,?)")
 	prep("view", "SELECT name, description, picture_ext FROM pets WHERE uid=?")
+	prep("adopt", "SELECT uid, name, description, picture_ext FROM pets ORDER BY uid")
 	// Configure http server
 
 	http.Handle("/static/", http.FileServer(http.FS(data.StaticFS)))
 	http.Handle("/image/", http.StripPrefix("/image/", http.FileServer(http.Dir("./image"))))
 	http.HandleFunc("/api/list", listHandler)
 	http.HandleFunc("/view.html", viewHandler)
+	http.HandleFunc("/adopt.html", adoptHandler)
 	http.HandleFunc("/", templateHandler)
 	// Start the server
 	if err := http.ListenAndServe("0.0.0.0:8080", nil); err != nil {

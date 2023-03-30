@@ -6,7 +6,7 @@
     function preview(event) {
         if(event.target.files.length > 0){
             var s = URL.createObjectURL(event.target.files[0]);
-            var p = document.getElementById("picture-preview");
+            var p = document.getElementById("picturePreview");
             p.src = s;
             p.style.display = "block";
         }
@@ -14,7 +14,7 @@
 </script>
 
 <form action="/api/list" enctype="multipart/form-data" method="post">
-    <img id="picture-preview" />
+    <img id="picturePreview" />
     <label for="picture">Picture</label><br />
     <input type="file" id="picture" name="picture" accept="image/*" onchange="preview(event);" />
     <br />

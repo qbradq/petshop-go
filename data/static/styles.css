@@ -94,10 +94,22 @@ h1.title {
 p {
     text-indent: 4em;
 }
-img#picture-preview {
+img#picturePreview {
     width: 100%;
     display: none;
 }
-img#pet-pic {
+img#petPic {
     width: 100%
+}
+div.wrapperPet {
+    min-height: 180px;
+}
+img.petPreview {
+    float: left;
+    max-width: 180px;
+    max-height: 180px;
+}
+span.petName {
+    font-size: 2em;
+    font-weight: bold;
 }
