@@ -2,13 +2,6 @@
 
 <h1 class="title">List a Pet</h1>
 
-<style>
-img#picture-preview {
-    width: 100%;
-    display: none;
-}
-</style>
-
 <script>
     function preview(event) {
         if(event.target.files.length > 0){

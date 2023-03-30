@@ -94,3 +94,7 @@ h1.title {
 p {
     text-indent: 4em;
 }
+img#picture-preview {
+    width: 100%;
+    display: none;
+}

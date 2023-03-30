@@ -54,10 +54,12 @@ func Main() {
 	}
 	// Prepare statements
 	prep("list", "INSERT INTO pets (name, description, picture) VALUES (?,?,?)")
+	prep("view", "SELECT name, description FROM pets WHERE uid=?")
 	// Configure http server
 	hfs := http.FileServer(http.FS(data.StaticFS))
 	http.Handle("/static/", hfs)
 	http.HandleFunc("/api/list", listHandler)
+	http.HandleFunc("/view.html", viewHandler)
 	http.HandleFunc("/", templateHandler)
 	// Start the server
 	if err := http.ListenAndServe("0.0.0.0:8080", nil); err != nil {
