@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"path"
 	"strconv"
 )
@@ -30,7 +31,7 @@ func listHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err := r.ParseMultipartForm(1024 * 1024 * 10); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	name := r.PostForm.Get("name")
@@ -43,21 +44,25 @@ func listHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer pf.Close()
+	ext := path.Ext(handle.Filename)
 	pd, err := io.ReadAll(pf)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// File attributes
-	mime := handle.Header.Get("Content-Type")
-	ext := path.Ext(handle.Filename)
 	// Insert statement
-	res, err := statements["list"].Exec(name, description, mime, ext, pd)
+	res, err := statements["list"].Exec(name, description, ext)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	id, err := res.LastInsertId()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	// Save the image to the file system
+	err = os.WriteFile(path.Join("image", fmt.Sprintf("%d%s", id, ext)), pd, 0777)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -76,7 +81,7 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 	v := r.URL.Query()
 	va := v["p"]
 	if len(va) < 1 {
-		http.Error(w, "no pet specified", http.StatusInternalServerError)
+		http.Error(w, "no pet specified", http.StatusBadRequest)
 		return
 	}
 	id, err := strconv.Atoi(va[0])
@@ -99,24 +104,4 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-}
-
-// imageHandler serves pet images.
-func imageHandler(w http.ResponseWriter, r *http.Request) {
-	var pd = make([]byte, 0)
-	var mime string
-	ids := r.URL.Query().Get("p")
-	id, err := strconv.Atoi(ids)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	err = statements["image"].QueryRow(id).Scan(&mime, &pd)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	w.Header().Add("Content-Type", mime)
-	w.WriteHeader(http.StatusOK)
-	w.Write(pd)
 }
