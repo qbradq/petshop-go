@@ -37,7 +37,7 @@ func listHandler(w http.ResponseWriter, r *http.Request) {
 	description := r.PostForm.Get("description")
 	// TODO input validation
 	// File upload
-	pf, _, err := r.FormFile("picture")
+	pf, handle, err := r.FormFile("picture")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -48,8 +48,11 @@ func listHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	// File attributes
+	mime := handle.Header.Get("Content-Type")
+	ext := path.Ext(handle.Filename)
 	// Insert statement
-	res, err := statements["list"].Exec(name, description, pd)
+	res, err := statements["list"].Exec(name, description, mime, ext, pd)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -63,10 +66,12 @@ func listHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, fmt.Sprintf("/view.html?p=%d", id), http.StatusFound)
 }
 
+// viewHandler handles viewing a pet for adoption.
 func viewHandler(w http.ResponseWriter, r *http.Request) {
 	var (
 		name        string
 		description string
+		ext         string
 	)
 	v := r.URL.Query()
 	va := v["p"]
@@ -79,15 +84,39 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	err = statements["view"].QueryRow(id).Scan(&name, &description)
+	err = statements["view"].QueryRow(id).Scan(&name, &description, &ext)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	pet := &Pet{
-		ID:          id,
-		Name:        name,
-		Description: description,
+		ID:               id,
+		Name:             name,
+		Description:      description,
+		PictureExtension: ext,
 	}
-	tpl.ExecuteTemplate(w, "view.html.tpl", pet)
+	if err := tpl.ExecuteTemplate(w, "view.html.tpl", pet); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+// imageHandler serves pet images.
+func imageHandler(w http.ResponseWriter, r *http.Request) {
+	var pd = make([]byte, 0)
+	var mime string
+	ids := r.URL.Query().Get("p")
+	id, err := strconv.Atoi(ids)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = statements["image"].QueryRow(id).Scan(&mime, &pd)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Add("Content-Type", mime)
+	w.WriteHeader(http.StatusOK)
+	w.Write(pd)
 }

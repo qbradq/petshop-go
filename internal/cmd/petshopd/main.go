@@ -47,17 +47,24 @@ func Main() {
 			"uid INTEGER PRIMARY KEY AUTOINCREMENT," +
 			"name VARCHAR(64) NULL," +
 			"description VARCHAR(1024) NULL," +
+			"picture_mime VARCHAR(64) NULL," +
+			"picture_ext VARCHAR(32) NULL," +
 			"picture BLOB NULL" +
 			");")
 	if err != nil {
 		log.Fatal(err)
 	}
 	// Prepare statements
-	prep("list", "INSERT INTO pets (name, description, picture) VALUES (?,?,?)")
-	prep("view", "SELECT name, description FROM pets WHERE uid=?")
+	prep("list", "INSERT INTO pets (name, description, picture_mime, picture_ext, picture) VALUES (?,?,?,?,?)")
+	prep("view", "SELECT name, description, picture_ext FROM pets WHERE uid=?")
+	prep("image", "SELECT picture_mime, picture FROM pets WHERE uid=?")
 	// Configure http server
 	hfs := http.FileServer(http.FS(data.StaticFS))
 	http.Handle("/static/", hfs)
+	http.HandleFunc("/api/test/*", func(w http.ResponseWriter, r *http.Request) {
+		log.Println(r.RequestURI)
+	})
+	http.HandleFunc("/api/image", imageHandler)
 	http.HandleFunc("/api/list", listHandler)
 	http.HandleFunc("/view.html", viewHandler)
 	http.HandleFunc("/", templateHandler)
