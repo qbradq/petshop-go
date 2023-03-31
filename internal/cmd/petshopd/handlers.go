@@ -144,3 +144,30 @@ func adoptHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+// finalizeHandler finalizes adoption requests
+func finalizeHandler(w http.ResponseWriter, r *http.Request) {
+	v := r.URL.Query()
+	va := v["p"]
+	if len(va) < 1 {
+		http.Error(w, "no pet specified", http.StatusBadRequest)
+		return
+	}
+	id, err := strconv.Atoi(va[0])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	// Delete the adoption listing
+	_, err = statements["finalize"].Exec(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	// Render the template
+	pet := Pet{ID: id}
+	if err := tpl.ExecuteTemplate(w, "finalize.html.tpl", pet); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}

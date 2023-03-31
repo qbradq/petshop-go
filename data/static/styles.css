@@ -103,6 +103,7 @@ img#petPic {
 }
 div.wrapperPet {
     min-height: 180px;
+    margin-bottom: 1em;
 }
 img.petPreview {
     float: left;
